@@ -1,65 +1,69 @@
 package br.com.dio.desafio.dominio;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Dev {
-    private String nome;
-    private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
-    private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
 
-    public void inscreverBootcamp(Bootcamp bootcamp){
-        this.conteudosInscritos.addAll(bootcamp.getConteudos());
-        bootcamp.getDevsInscritos().add(this);
+    private final String nome;
+
+    private final Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
+    private final Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
+
+    public Dev(String nome) {
+        if(nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome é obrigatório.");
+        }
+
+        this.nome = nome;
     }
 
-    public void progredir() {
-        Optional<Conteudo> conteudo = this.conteudosInscritos.stream().findFirst();
-        if(conteudo.isPresent()) {
-            this.conteudosConcluidos.add(conteudo.get());
-            this.conteudosInscritos.remove(conteudo.get());
-        } else {
-            System.err.println("Você não está matriculado em nenhum conteúdo!");
+    public void inscreverBootcamp(Bootcamp bootcamp){
+
+        Objects.requireNonNull(
+                bootcamp,
+                "Bootcamp não pode ser nulo."
+        );
+
+        this.conteudosInscritos.addAll(bootcamp.getConteudos());
+
+        bootcamp.adicionarDev(this);
+    }
+
+    public boolean progredir() {
+        var proximoConteudo = conteudosInscritos.stream().findFirst();
+
+        if(proximoConteudo.isEmpty()) {
+            return false;
         }
+
+        Conteudo conteudo = proximoConteudo.get();
+
+        conteudosInscritos.remove(conteudo);
+        conteudosConcluidos.add(conteudo);
+
+        return true;
     }
 
     public double calcularTotalXp() {
-        Iterator<Conteudo> iterator = this.conteudosConcluidos.iterator();
-        double soma = 0;
-        while(iterator.hasNext()){
-            double next = iterator.next().calcularXp();
-            soma += next;
-        }
-        return soma;
-
-        /*return this.conteudosConcluidos
+        return this.conteudosConcluidos
                 .stream()
                 .mapToDouble(Conteudo::calcularXp)
-                .sum();*/
+                .sum();
     }
-
 
     public String getNome() {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
     public Set<Conteudo> getConteudosInscritos() {
-        return conteudosInscritos;
-    }
-
-    public void setConteudosInscritos(Set<Conteudo> conteudosInscritos) {
-        this.conteudosInscritos = conteudosInscritos;
+        return Collections.unmodifiableSet(conteudosInscritos);
     }
 
     public Set<Conteudo> getConteudosConcluidos() {
-        return conteudosConcluidos;
-    }
-
-    public void setConteudosConcluidos(Set<Conteudo> conteudosConcluidos) {
-        this.conteudosConcluidos = conteudosConcluidos;
+        return Collections.unmodifiableSet(conteudosConcluidos);
     }
 
     @Override
@@ -73,5 +77,15 @@ public class Dev {
     @Override
     public int hashCode() {
         return Objects.hash(nome, conteudosInscritos, conteudosConcluidos);
+    }
+
+    @Override
+    public String toString() {
+        return "Dev{" +
+                "nome='" + nome + '\'' +
+                ", conteúdos inscritos=" + conteudosInscritos.size() +
+                ", conteúdos concluídos=" + conteudosConcluidos.size() +
+                ", xp=" + calcularTotalXp() +
+                '}';
     }
 }
