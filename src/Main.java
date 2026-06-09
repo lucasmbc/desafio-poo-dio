@@ -2,6 +2,8 @@ import br.com.dio.desafio.dominio.Bootcamp;
 import br.com.dio.desafio.dominio.Curso;
 import br.com.dio.desafio.dominio.Dev;
 import br.com.dio.desafio.dominio.Mentoria;
+import br.com.dio.desafio.service.InscricaoService;
+import br.com.dio.desafio.service.ProgressaoService;
 
 import java.time.LocalDate;
 
@@ -23,10 +25,12 @@ public class Main {
         bootcamp.adicionarConteudo(mentoria);
 
         Dev devCamila = new Dev("Camila");
-        devCamila.inscreverBootcamp(bootcamp);
+        InscricaoService inscricaoCamila = new InscricaoService(devCamila);
+        inscricaoCamila.inscrever(bootcamp);
         System.out.println("Conteúdos Inscritos Camila:" + devCamila.getConteudosInscritos());
-        devCamila.progredir();
-        devCamila.progredir();
+        ProgressaoService progressaoCamila = new ProgressaoService(inscricaoCamila);
+        progressaoCamila.progredir();
+        progressaoCamila.progredir();
         System.out.println("-");
         System.out.println("Conteúdos Inscritos Camila:" + devCamila.getConteudosInscritos());
         System.out.println("Conteúdos Concluídos Camila:" + devCamila.getConteudosConcluidos());
@@ -36,11 +40,13 @@ public class Main {
         System.out.println("-------");
 
         Dev devJoao = new Dev("Joao");
-        devJoao.inscreverBootcamp(bootcamp);
+        InscricaoService inscricaoJoao = new InscricaoService(devJoao);
+        inscricaoJoao.inscrever(bootcamp);
         System.out.println("Conteúdos Inscritos João:" + devJoao.getConteudosInscritos());
-        devJoao.progredir();
-        devJoao.progredir();
-        devJoao.progredir();
+        ProgressaoService progressaoJoao = new ProgressaoService(inscricaoJoao);
+        progressaoJoao.progredir();
+        progressaoJoao.progredir();
+        progressaoJoao.progredir();
         System.out.println("-");
         System.out.println("Conteúdos Inscritos João:" + devJoao.getConteudosInscritos());
         System.out.println("Conteúdos Concluidos João:" + devJoao.getConteudosConcluidos());
