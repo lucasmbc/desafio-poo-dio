@@ -1,6 +1,10 @@
-# Bootcamp Java - Desafio de Programação Orientada a Objetos
+# Bootcamp Java - Programação Orientada a Objetos
 
-Projeto desenvolvido em Java com foco na aplicação dos principais conceitos de Programação Orientada a Objetos (POO), simulando uma plataforma de cursos online onde desenvolvedores podem se inscrever em bootcamps, consumir conteúdos e acumular experiência (XP).
+Projeto desenvolvido em Java com foco na aplicação dos principais conceitos de Programação Orientada a Objetos (POO), simulando uma plataforma de ensino onde desenvolvedores podem se inscrever em bootcamps, consumir conteúdos e acumular experiência (XP).
+
+Além dos conceitos fundamentais de POO, o projeto foi refatorado seguindo boas práticas de desenvolvimento, incluindo separação de responsabilidades, encapsulamento, imutabilidade e tratamento de exceções customizadas.
+
+---
 
 ## Objetivos
 
@@ -11,14 +15,82 @@ Este projeto demonstra a utilização dos pilares da Programação Orientada a O
 - Herança
 - Polimorfismo
 
-Além disso, aplica boas práticas de desenvolvimento Java, como:
+Além disso, aplica conceitos frequentemente utilizados em projetos Java profissionais:
 
-- Imutabilidade de objetos
+- Imutabilidade
 - Encapsulamento de coleções
-- Validação de regras de negócio
-- Uso de Streams
-- Implementação adequada de `equals()` e `hashCode()`
-- Modelagem orientada ao domínio
+- Separação de responsabilidades (SRP)
+- Camada de serviços
+- Exceções customizadas
+- Streams API
+- Collections Framework
+- Modelagem de domínio
+- Boas práticas de orientação a objetos
+
+---
+
+## Estrutura do Projeto
+
+```text
+src
+└── main
+    └── java
+        └── br
+            └── com
+                └── bootcamp
+                    ├── domain
+                    │   ├── Conteudo.java
+                    │   ├── Curso.java
+                    │   ├── Mentoria.java
+                    │   ├── Bootcamp.java
+                    │   └── Dev.java
+                    │
+                    ├── service
+                    │   ├── InscricaoService.java
+                    │   └── ProgressaoService.java
+                    │
+                    ├── exception
+                    │   ├── ConteudoNaoEncontradoException.java
+                    │   └── ProgressaoInvalidaException.java
+                    │
+                    └── Main.java
+```
+
+---
+
+## Arquitetura
+
+O projeto foi organizado em camadas simples para separar responsabilidades:
+
+### Domain
+
+Responsável por representar as entidades e regras básicas do domínio.
+
+```text
+Conteudo
+Curso
+Mentoria
+Bootcamp
+Dev
+```
+
+### Service
+
+Responsável por executar regras de negócio e orquestrar operações entre entidades.
+
+```text
+InscricaoService
+ProgressaoService
+```
+
+### Exception
+
+Responsável pelo tratamento de erros de negócio através de exceções customizadas.
+
+```text
+ConteudoNaoEncontradoException
+ProgressaoInvalidaException
+```
 
 ---
 
@@ -65,47 +137,36 @@ Além disso, aplica boas práticas de desenvolvimento Java, como:
                  | inscritos      |
                  | concluidos     |
                  +----------------+
-                 | progredir()    |
-                 | calcularXp()   |
-                 +----------------+
+
+        +--------------------------+
+        |    InscricaoService      |
+        +--------------------------+
+        | inscrever()              |
+        +--------------------------+
+
+        +--------------------------+
+        |    ProgressaoService     |
+        +--------------------------+
+        | progredir()              |
+        +--------------------------+
 ```
 
 ---
 
-## Estrutura do Projeto
+# Entidades
 
-```text
-src
-└── main
-    └── java
-        └── br
-            └── com
-                └── bootcamp
-                    └── domain
-                        ├── Conteudo.java
-                        ├── Curso.java
-                        ├── Mentoria.java
-                        ├── Bootcamp.java
-                        ├── Dev.java
-                        └── Main.java
-```
+## Conteudo
 
----
+Classe abstrata que representa qualquer conteúdo disponível no sistema.
 
-## Classes do Projeto
-
-### Conteudo
-
-Classe abstrata responsável por representar qualquer conteúdo disponível no bootcamp.
-
-#### Atributos
+### Atributos
 
 | Campo | Tipo |
 |---------|---------|
 | titulo | String |
 | descricao | String |
 
-#### Métodos
+### Método principal
 
 ```java
 public abstract double calcularXp();
@@ -113,17 +174,17 @@ public abstract double calcularXp();
 
 ---
 
-### Curso
+## Curso
 
-Representa um curso disponível na plataforma.
+Representa um curso disponível dentro de um bootcamp.
 
-#### Atributos
+### Atributos
 
 | Campo | Tipo |
 |---------|---------|
 | cargaHoraria | int |
 
-#### Regra de XP
+### Regra de XP
 
 ```java
 XP_PADRAO * cargaHoraria
@@ -132,7 +193,7 @@ XP_PADRAO * cargaHoraria
 Exemplo:
 
 ```text
-Curso com 8 horas
+Curso de 8 horas
 
 XP = 10 * 8
 XP = 80
@@ -140,17 +201,17 @@ XP = 80
 
 ---
 
-### Mentoria
+## Mentoria
 
 Representa uma sessão de mentoria.
 
-#### Atributos
+### Atributos
 
 | Campo | Tipo |
 |---------|---------|
 | data | LocalDate |
 
-#### Regra de XP
+### Regra de XP
 
 ```java
 XP_PADRAO + BONUS_XP
@@ -165,17 +226,17 @@ XP = 30
 
 ---
 
-### Bootcamp
+## Bootcamp
 
 Agrupa conteúdos e desenvolvedores inscritos.
 
-#### Responsabilidades
+### Responsabilidades
 
 - Armazenar conteúdos
 - Armazenar desenvolvedores inscritos
-- Definir período de duração do bootcamp
+- Definir período do bootcamp
 
-#### Métodos principais
+### Métodos principais
 
 ```java
 adicionarConteudo(Conteudo conteudo)
@@ -191,25 +252,17 @@ getDevsInscritos()
 
 ---
 
-### Dev
+## Dev
 
 Representa um aluno da plataforma.
 
-#### Responsabilidades
+### Responsabilidades
 
-- Inscrever-se em bootcamps
-- Progredir nos conteúdos
+- Possuir conteúdos inscritos
+- Possuir conteúdos concluídos
 - Calcular XP acumulado
 
-#### Métodos principais
-
-```java
-inscreverBootcamp(Bootcamp bootcamp)
-```
-
-```java
-progredir()
-```
+### Método principal
 
 ```java
 calcularTotalXp()
@@ -217,164 +270,273 @@ calcularTotalXp()
 
 ---
 
-## Fluxo de Funcionamento
+# Camada de Serviços
 
-### 1. Criar conteúdos
+## InscricaoService
+
+Responsável por realizar a inscrição de um desenvolvedor em um bootcamp.
+
+### Método
+
+```java
+public void inscrever(
+        Dev dev,
+        Bootcamp bootcamp
+)
+```
+
+### Fluxo
+
+1. Obtém todos os conteúdos do bootcamp.
+2. Adiciona os conteúdos ao desenvolvedor.
+3. Registra o desenvolvedor como inscrito no bootcamp.
+
+---
+
+## ProgressaoService
+
+Responsável pela progressão do desenvolvedor.
+
+### Método
+
+```java
+public void progredir(
+        Dev dev
+)
+```
+
+### Fluxo
+
+1. Obtém o próximo conteúdo disponível.
+2. Remove da lista de conteúdos inscritos.
+3. Adiciona na lista de conteúdos concluídos.
+4. Atualiza o XP acumulado.
+
+---
+
+# Exceções Customizadas
+
+## ProgressaoInvalidaException
+
+Lançada quando um desenvolvedor tenta progredir sem possuir conteúdos pendentes.
+
+Exemplo:
+
+```java
+throw new ProgressaoInvalidaException(
+    "Não existem conteúdos pendentes."
+);
+```
+
+---
+
+## ConteudoNaoEncontradoException
+
+Pode ser utilizada em futuras implementações quando um conteúdo não for encontrado durante operações do sistema.
+
+Exemplo:
+
+```java
+throw new ConteudoNaoEncontradoException(
+    "Conteúdo não encontrado."
+);
+```
+
+---
+
+# Fluxo de Utilização
+
+## Criando conteúdos
 
 ```java
 Curso java = new Curso(
-    "Java Básico",
-    "Fundamentos da linguagem",
-    8
+        "Java Básico",
+        "Fundamentos da linguagem",
+        8
+);
+
+Curso spring = new Curso(
+        "Spring Boot",
+        "APIs REST",
+        10
 );
 
 Mentoria mentoria = new Mentoria(
-    "Mentoria Java",
-    "Sessão de dúvidas",
-    LocalDate.now()
+        "Mentoria Java",
+        "Tira dúvidas",
+        LocalDate.now()
 );
 ```
 
-### 2. Criar um bootcamp
+---
+
+## Criando um bootcamp
 
 ```java
 Bootcamp bootcamp = new Bootcamp(
-    "Bootcamp Java",
-    "Formação Backend"
+        "Bootcamp Java Backend",
+        "Formação completa"
 );
 ```
 
-### 3. Adicionar conteúdos
+---
+
+## Adicionando conteúdos
 
 ```java
 bootcamp.adicionarConteudo(java);
+bootcamp.adicionarConteudo(spring);
 bootcamp.adicionarConteudo(mentoria);
 ```
 
-### 4. Inscrever um desenvolvedor
+---
+
+## Criando um desenvolvedor
 
 ```java
 Dev lucas = new Dev("Lucas");
-
-lucas.inscreverBootcamp(bootcamp);
 ```
 
-### 5. Progredir nos estudos
+---
+
+## Realizando inscrição
 
 ```java
-lucas.progredir();
-lucas.progredir();
-```
+InscricaoService inscricaoService =
+        new InscricaoService();
 
-### 6. Consultar XP
-
-```java
-System.out.println(
-    lucas.calcularTotalXp()
+inscricaoService.inscrever(
+        lucas,
+        bootcamp
 );
 ```
 
 ---
 
-## Exemplo Completo
+## Progredindo nos conteúdos
 
 ```java
-public class Main {
+ProgressaoService progressaoService =
+        new ProgressaoService();
 
-    public static void main(String[] args) {
-
-        Curso java = new Curso(
-                "Java Básico",
-                "Fundamentos da linguagem",
-                8
-        );
-
-        Curso spring = new Curso(
-                "Spring Boot",
-                "APIs REST",
-                10
-        );
-
-        Mentoria mentoria = new Mentoria(
-                "Mentoria Java",
-                "Tira dúvidas",
-                LocalDate.now()
-        );
-
-        Bootcamp bootcamp = new Bootcamp(
-                "Bootcamp Java Backend",
-                "Formação completa"
-        );
-
-        bootcamp.adicionarConteudo(java);
-        bootcamp.adicionarConteudo(spring);
-        bootcamp.adicionarConteudo(mentoria);
-
-        Dev lucas = new Dev("Lucas");
-
-        lucas.inscreverBootcamp(bootcamp);
-
-        lucas.progredir();
-        lucas.progredir();
-
-        System.out.println(lucas);
-
-        System.out.println(
-                "XP Total: " + lucas.calcularTotalXp()
-        );
-    }
-}
+progressaoService.progredir(lucas);
+progressaoService.progredir(lucas);
 ```
 
 ---
 
-## Melhorias Aplicadas
+## Consultando XP
 
-Em relação à versão original do desafio, foram realizadas as seguintes melhorias:
-
-### Imutabilidade
-
-- Uso de atributos `final`
-- Remoção de setters desnecessários
-- Objetos criados sempre em estado válido
-
-### Encapsulamento
-
-- Coleções protegidas com `Collections.unmodifiableSet()`
-- Remoção de setters para coleções
-
-### Validações
-
-- Nome obrigatório
-- Descrição obrigatória
-- Carga horária positiva
-- Datas válidas
-
-### Boas práticas
-
-- Uso de Streams
-- Constantes para valores fixos
-- Implementação adequada de `equals()` e `hashCode()`
-- Evita exposição indevida do estado interno dos objetos
-
-### Modelagem de Domínio
-
-- Métodos específicos para regras de negócio
-- Redução do acoplamento
-- Maior legibilidade e manutenção
+```java
+System.out.println(
+        lucas.calcularTotalXp()
+);
+```
 
 ---
 
-## Tecnologias Utilizadas
+# Melhorias Aplicadas
 
-- Java 11 (ou superior)
+## Estrutura em Camadas
+
+Separação das responsabilidades entre:
+
+- Entidades
+- Serviços
+- Exceções
+
+---
+
+## Imutabilidade
+
+Uso de atributos `final` sempre que possível.
+
+Exemplo:
+
+```java
+private final String nome;
+```
+
+---
+
+## Encapsulamento
+
+Coleções protegidas através de:
+
+```java
+Collections.unmodifiableSet(...)
+```
+
+---
+
+## Validações
+
+Validação de:
+
+- Nome
+- Descrição
+- Carga horária
+- Datas obrigatórias
+
+---
+
+## Tratamento de Erros
+
+Substituição de mensagens em console por exceções customizadas.
+
+Antes:
+
+```java
+System.err.println(
+    "Você não está matriculado."
+);
+```
+
+Depois:
+
+```java
+throw new ProgressaoInvalidaException(
+    "Não existem conteúdos pendentes."
+);
+```
+
+---
+
+## Streams API
+
+Cálculo de XP utilizando Stream API.
+
+```java
+return conteudosConcluidos
+        .stream()
+        .mapToDouble(Conteudo::calcularXp)
+        .sum();
+```
+
+---
+
+## Boas Práticas de POO
+
+- Classes imutáveis
+- Responsabilidade única (SRP)
+- Baixo acoplamento
+- Alta coesão
+- Encapsulamento
+- Herança
+- Polimorfismo
+
+---
+
+# Tecnologias Utilizadas
+
+- Java 21+
 - Java Collections Framework
 - Java Stream API
 - Java Time API
 
 ---
 
-## Conceitos Demonstrados
+# Conceitos Demonstrados
 
 - Classes e Objetos
 - Herança
@@ -382,17 +544,35 @@ Em relação à versão original do desafio, foram realizadas as seguintes melho
 - Classes Abstratas
 - Encapsulamento
 - Imutabilidade
-- Collections
 - Streams
+- Collections
 - Optional
-- Sobrescrita de métodos
+- Exceções Customizadas
 - Equals e HashCode
+- Separação de Responsabilidades
 
 ---
 
-## Autor
+# Possíveis Evoluções
 
-Desenvolvido por Lucas Bezerra.
+O projeto pode ser expandido futuramente com:
+
+- Persistência com JPA/Hibernate
+- API REST com Spring Boot
+- DTOs
+- Banco de dados PostgreSQL
+- Testes unitários com JUnit 5
+- Testcontainers
+- Docker
+- Spring Security e JWT
+- Arquitetura Hexagonal
+- Domain Driven Design (DDD)
+
+---
+
+# Autor
+
+**Lucas Bezerra**
 
 LinkedIn:
 
