@@ -40,7 +40,7 @@ public class Bootcamp {
         conteudos.add(conteudo);
     }
 
-    void adicionarDev(Dev dev) {
+    public void adicionarDev(Dev dev) {
         devsInscritos.add(dev);
     }
 
